@@ -420,13 +420,28 @@ ${notes || 'No additional notes.'}
             const paperUrl = urlParams.get('url');
             const pageTitle = urlParams.get('title');
             
+            console.log('URL params:', paperUrl, pageTitle); // Debug log
+            
             if (paperUrl) {
                 document.getElementById('url').value = paperUrl;
+                document.getElementById('url').style.borderColor = '#00b894';
+                
                 if (pageTitle) {
-                    document.getElementById('title').value = decodeURIComponent(pageTitle);
+                    // Clean up the title - remove common prefixes
+                    let cleanTitle = decodeURIComponent(pageTitle)
+                        .replace(/^\[.*?\]\s*/, '') // Remove [1234.5678] 
+                        .replace(/^arXiv:\d+\.\d+v?\d*\s*/, '') // Remove arXiv:1234.5678
+                        .trim();
+                    document.getElementById('title').value = cleanTitle;
+                    document.getElementById('title').style.borderColor = '#00b894';
                 }
-                // Trigger auto-fill
-                autoFillFromURL();
+                
+                // Try to auto-detect more info
+                if (paperUrl.includes('arxiv.org')) {
+                    document.getElementById('venue').value = 'arXiv';
+                    document.getElementById('venue').style.borderColor = '#00b894';
+                }
+                
                 showNotification("📖 Paper captured from bookmarklet!");
             }
         }

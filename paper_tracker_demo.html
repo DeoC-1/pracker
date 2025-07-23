@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Paper Reading Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+        
+        .form-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border-left: 5px solid #667eea;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 20px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .preview-section {
+            background: #2c3e50;
+            color: #ecf0f1;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 30px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .preview-title {
+            color: #3498db;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+        
+        .markdown-output {
+            background: #34495e;
+            padding: 20px;
+            border-radius: 10px;
+            white-space: pre-wrap;
+            font-size: 14px;
+            line-height: 1.6;
+            max-height: 400px;
+            overflow-y: auto;
+            border-left: 4px solid #3498db;
+        }
+        
+        .workflow-tips {
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 20px;
+        }
+        
+        .workflow-tips h3 {
+            margin-bottom: 15px;
+        }
+        
+        .workflow-tips ul {
+            list-style: none;
+        }
+        
+        .workflow-tips li {
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        .workflow-tips li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #00b894;
+            font-weight: bold;
+        }
+        
+        @media (max-width: 600px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📚 Daily Paper Tracker</h1>
+        <p class="subtitle">Streamline your research paper documentation for GitHub blog</p>
+        
+        <form class="form-section">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="title">Paper Title *</label>
+                    <input type="text" id="title" placeholder="Enter the paper title" required>
+                </div>
+                <div class="form-group">
+                    <label for="date">Date Read</label>
+                    <input type="date" id="date" required>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="authors">Authors</label>
+                    <input type="text" id="authors" placeholder="Smith, J., Doe, A.">
+                </div>
+                <div class="form-group">
+                    <label for="venue">Venue/Journal</label>
+                    <input type="text" id="venue" placeholder="ICML 2024, Nature, etc.">
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="category">Category</label>
+                    <select id="category">
+                        <option value="">Select category</option>
+                        <option value="machine-learning">Machine Learning</option>
+                        <option value="deep-learning">Deep Learning</option>
+                        <option value="nlp">Natural Language Processing</option>
+                        <option value="computer-vision">Computer Vision</option>
+                        <option value="robotics">Robotics</option>
+                        <option value="theory">Theory</option>
+                        <option value="systems">Systems</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="rating">Rating</label>
+                    <select id="rating">
+                        <option value="">Rate this paper</option>
+                        <option value="⭐⭐⭐⭐⭐">⭐⭐⭐⭐⭐ Excellent</option>
+                        <option value="⭐⭐⭐⭐">⭐⭐⭐⭐ Good</option>
+                        <option value="⭐⭐⭐">⭐⭐⭐ Average</option>
+                        <option value="⭐⭐">⭐⭐ Below Average</option>
+                        <option value="⭐">⭐ Poor</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="url">Paper URL</label>
+                <input type="url" id="url" placeholder="https://arxiv.org/abs/..." onblur="autoFillFromURL()">
+                <small style="color: #6c757d; font-size: 12px;">📡 Auto-fills title and authors from ArXiv/DOI</small>
+            </div>
+            
+            <div class="form-group">
+                <label for="summary">Key Findings & Summary</label>
+                <textarea id="summary" placeholder="Brief summary of the paper's main contributions and findings..."></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="notes">Personal Notes</label>
+                <textarea id="notes" placeholder="Your thoughts, questions, potential applications..."></textarea>
+            </div>
+            
+            <div style="display: flex; gap: 15px; margin-top: 20px;">
+                <button type="button" class="btn" onclick="generateMarkdown()" style="flex: 1;">Generate Markdown</button>
+                <button type="button" class="btn" onclick="saveToClipboard()" style="flex: 1; background: linear-gradient(45deg, #00b894, #00a085);">📋 Copy to Clipboard</button>
+            </div>
+        </form>
+        
+        <div class="preview-section" id="preview" style="display: none;">
+            <div class="preview-title">📝 Generated Markdown for GitHub Blog:</div>
+            <div class="markdown-output" id="markdownOutput"></div>
+        </div>
+        
+        <div class="workflow-tips">
+            <h3>🚀 Optimized Workflow:</h3>
+            <ul>
+                <li><strong>Instant Setup:</strong> Paste ArXiv/DOI URL → auto-fills metadata</li>
+                <li><strong>Smart Templates:</strong> Pre-configured categories for your research areas</li>
+                <li><strong>One-click Deploy:</strong> Copy markdown → drag to VS Code → Git commit</li>
+                <li><strong>Batch Processing:</strong> Fill multiple papers, then bulk commit</li>
+                <li><strong>Mobile Friendly:</strong> Read on phone → quick notes → full writeup later</li>
+                <li><strong>Auto-categorization:</strong> Keywords in title suggest categories</li>
+                <li><strong>Local Storage:</strong> Form saves drafts automatically</li>
+            </ul>
+            
+            <div style="margin-top: 20px; padding: 15px; background: rgba(255,255,255,0.1); border-radius: 10px;">
+                <h4>⚡ Power User Tips:</h4>
+                <p style="margin-bottom: 10px;"><strong>Browser Extension:</strong> Right-click any paper → "Add to Reading Log"</p>
+                <p style="margin-bottom: 10px;"><strong>Email Integration:</strong> Forward papers to papers@yourblog.com → auto-parsed</p>
+                <p><strong>AI Assistant:</strong> "Summarize this paper" → paste into summary field</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Set today's date as default
+        document.getElementById('date').valueAsDate = new Date();
+        
+        function autoFillFromURL() {
+            const url = document.getElementById('url').value;
+            if (url.includes('arxiv.org')) {
+                // Simulate ArXiv metadata extraction
+                document.getElementById('title').value = "Attention Is All You Need (Demo)";
+                document.getElementById('authors').value = "Vaswani, A., et al.";
+                document.getElementById('venue').value = "NIPS 2017";
+                document.getElementById('category').value = "deep-learning";
+                // In reality, this would call ArXiv API
+                showNotification("📡 Metadata auto-filled from ArXiv!");
+            }
+        }
+        
+        function saveToClipboard() {
+            const output = document.getElementById('markdownOutput').textContent;
+            if (!output || output === '') {
+                alert('Generate markdown first!');
+                return;
+            }
+            
+            navigator.clipboard.writeText(output).then(() => {
+                showNotification("📋 Copied to clipboard! Ready to paste in your repo.");
+            }).catch(() => {
+                alert('Failed to copy. Please select and copy manually.');
+            });
+        }
+        
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.textContent = message;
+            notification.style.cssText = `
+                position: fixed; top: 20px; right: 20px; z-index: 1000;
+                background: #00b894; color: white; padding: 15px 20px;
+                border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+                animation: slideIn 0.3s ease;
+            `;
+            document.body.appendChild(notification);
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease forwards';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+        
+        // Auto-save form data
+        function saveFormData() {
+            const formData = {};
+            const inputs = document.querySelectorAll('input, select, textarea');
+            inputs.forEach(input => {
+                formData[input.id] = input.value;
+            });
+            localStorage.setItem('paperFormData', JSON.stringify(formData));
+        }
+        
+        function loadFormData() {
+            const saved = localStorage.getItem('paperFormData');
+            if (saved) {
+                const formData = JSON.parse(saved);
+                Object.keys(formData).forEach(key => {
+                    const element = document.getElementById(key);
+                    if (element && key !== 'title' && key !== 'date') { // Don't restore title/date
+                        element.value = formData[key];
+                    }
+                });
+            }
+        }
+            const title = document.getElementById('title').value;
+            const date = document.getElementById('date').value;
+            const authors = document.getElementById('authors').value;
+            const venue = document.getElementById('venue').value;
+            const category = document.getElementById('category').value;
+            const rating = document.getElementById('rating').value;
+            const url = document.getElementById('url').value;
+            const summary = document.getElementById('summary').value;
+            const notes = document.getElementById('notes').value;
+            
+            if (!title || !date) {
+                alert('Please fill in the required fields (Title and Date)');
+                return;
+            }
+            
+            // Generate filename suggestion
+            const filename = date + '-' + title.toLowerCase()
+                .replace(/[^a-z0-9\s]/gi, '')
+                .replace(/\s+/g, '-')
+                .substring(0, 50) + '.md';
+            
+            // Generate frontmatter and content
+            let markdown = `---
+layout: post
+title: "${title}"
+date: ${date}
+categories: [papers${category ? ', ' + category : ''}]
+tags: [research, paper-review]
+---
+
+# ${title}
+
+**Authors:** ${authors || 'N/A'}  
+**Venue:** ${venue || 'N/A'}  
+**Date Read:** ${date}  
+${rating ? `**Rating:** ${rating}` : ''}
+${url ? `**Paper URL:** [Link](${url})` : ''}
+
+## Summary
+
+${summary || 'No summary provided.'}
+
+## Personal Notes
+
+${notes || 'No additional notes.'}
+
+---
+*Paper reviewed on ${new Date().toLocaleDateString()}*
+`;
+
+            // Show preview
+            document.getElementById('preview').style.display = 'block';
+            document.getElementById('markdownOutput').textContent = `Suggested filename: ${filename}\n\n${markdown}`;
+            
+            // Scroll to preview
+            document.getElementById('preview').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // Load saved data and handle URL parameters on page load
+        window.onload = function() {
+            loadFormData();
+            handleURLParameters();
+        };
+        
+        function handleURLParameters() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const paperUrl = urlParams.get('url');
+            const pageTitle = urlParams.get('title');
+            
+            if (paperUrl) {
+                document.getElementById('url').value = paperUrl;
+                if (pageTitle) {
+                    document.getElementById('title').value = decodeURIComponent(pageTitle);
+                }
+                // Trigger auto-fill
+                autoFillFromURL();
+                showNotification("📖 Paper captured from bookmarklet!");
+            }
+        }
+        
+        // Add some interactivity and auto-save
+        const inputs = document.querySelectorAll('input, select, textarea');
+        inputs.forEach(input => {
+            input.addEventListener('input', function() {
+                this.style.borderColor = this.value ? '#00b894' : '#e9ecef';
+                saveFormData(); // Auto-save on every change
+            });
+        });
+        
+        // Add CSS for notifications
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+            @keyframes slideOut { to { transform: translateX(100%); opacity: 0; } }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

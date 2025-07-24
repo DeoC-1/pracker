@@ -351,20 +351,34 @@
                 });
             }
         }
-            const title = document.getElementById('title').value;
-            const date = document.getElementById('date').value;
-            const authors = document.getElementById('authors').value;
-            const venue = document.getElementById('venue').value;
-            const category = document.getElementById('category').value;
-            const rating = document.getElementById('rating').value;
-            const url = document.getElementById('url').value;
-            const summary = document.getElementById('summary').value;
-            const notes = document.getElementById('notes').value;
-            
-            if (!title || !date) {
-                alert('Please fill in the required fields (Title and Date)');
-                return;
-            }
+            function generateMarkdown() {
+    const title = document.getElementById('title').value;
+    const date = document.getElementById('date').value;
+    const authors = document.getElementById('authors').value;
+    const venue = document.getElementById('venue').value;
+    const category = document.getElementById('category').value;
+    const rating = document.getElementById('rating').value;
+    const url = document.getElementById('url').value;
+    const summary = document.getElementById('summary').value;
+    const notes = document.getElementById('notes').value;
+
+    if (!title || !date) {
+        alert('Please fill in the required fields (Title and Date)');
+        return;
+    }
+
+    const filename = date + '-' + title.toLowerCase()
+        .replace(/[^a-z0-9\s]/gi, '')
+        .replace(/\s+/g, '-')
+        .substring(0, 50) + '.md';
+
+    let markdown = `---\nlayout: post\ntitle: "${title}"\ndate: ${date}\ncategories: [papers${category ? ', ' + category : ''}]\ntags: [research, paper-review]\n---\n\n# ${title}\n\n**Authors:** ${authors || 'N/A'}  \n**Venue:** ${venue || 'N/A'}  \n**Date Read:** ${date}  \n${rating ? `**Rating:** ${rating}` : ''}\n${url ? `**Paper URL:** [Link](${url})` : ''}\n\n## Summary\n\n${summary || 'No summary provided.'}\n\n## Personal Notes\n\n${notes || 'No additional notes.'}\n\n---\n*Paper reviewed on ${new Date().toLocaleDateString()}*`;
+
+    document.getElementById('preview').style.display = 'block';
+    document.getElementById('markdownOutput').textContent = `Suggested filename: ${filename}\n\n${markdown}`;
+    document.getElementById('preview').scrollIntoView({ behavior: 'smooth' });
+}
+
             
             // Generate filename suggestion
             const filename = date + '-' + title.toLowerCase()
